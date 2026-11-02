@@ -81,7 +81,33 @@ def purchase_book():
 
 
 
-purchase_book()
+
+def main():
+    while True:
+        print("\n===== Bazar.com =====")
+        print("1. Search for books")
+        print("2. View book information")
+        print("3. Purchase a book")
+        print("4. Exit")
+
+        choice = input("Choose an option (1-4): ")
+
+        if choice == "1":
+            search_books()
+        elif choice == "2":
+            book_info()
+        elif choice == "3":
+            purchase_book()
+        elif choice == "4":
+            print("Thank you for using Bazar.com!")
+            break
+        else:
+            print("Invalid choice. Please try again.")
+
+
+if __name__ == "__main__":
+    main()
+
 
 
 
