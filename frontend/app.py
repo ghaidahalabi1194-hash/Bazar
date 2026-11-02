@@ -5,6 +5,7 @@ import requests
 app = Flask(__name__)
 
 CATALOG_URL = "http://127.0.0.1:5001"
+ORDER_URL = "http://127.0.0.1:5002"
 
 
 @app.route("/", methods=["GET"])
@@ -47,6 +48,25 @@ def info(item_number):
     except requests.RequestException:
         return jsonify({
             "error": "Catalog Server is unavailable"
+        }), 503
+
+
+
+
+# Forward purchase requests to the Order Server
+@app.route("/purchase/<int:item_number>", methods=["POST"])
+def purchase(item_number):
+    try:
+        response = requests.post(
+            f"{ORDER_URL}/purchase/{item_number}",
+            timeout=10
+        )
+
+        return jsonify(response.json()), response.status_code
+
+    except requests.RequestException:
+        return jsonify({
+            "error": "Order Server is unavailable"
         }), 503
 
 
