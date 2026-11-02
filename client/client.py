@@ -52,10 +52,36 @@ def book_info():
             print("Error:", book.get("error", "Unknown error"))
 
     except requests.RequestException:
-        print("Frontend Server is unavailable.")        
+        print("Frontend Server is unavailable.")  
 
 
-book_info()
+def purchase_book():
+    item_number = input("Enter book ID to purchase: ")
+
+    if not item_number.isdigit():
+        print("Invalid book ID. Please enter a number.")
+        return
+
+    try:
+        response = requests.post(
+            f"{FRONTEND_URL}/purchase/{item_number}",
+            timeout=15
+        )
+
+        result = response.json()
+
+        if response.status_code == 200:
+            print("Purchase successful!")
+            print(result)
+        else:
+            print("Purchase failed:", result.get("error", result))
+
+    except requests.RequestException:
+        print("Frontend Server is unavailable.")
+
+
+
+purchase_book()
 
 
 
