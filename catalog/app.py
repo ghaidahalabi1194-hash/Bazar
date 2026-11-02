@@ -1,6 +1,6 @@
 
 from flask import Flask, jsonify, request
-from catalog_service import search_books, get_book_info, update_book
+from catalog_service import search_books, get_book_info, update_book, reserve_book
 
 app = Flask(__name__)
 
@@ -61,6 +61,23 @@ def update(item_number):
         return jsonify({"error": "Book not found"}), 404
 
     return jsonify({"message": "Book updated successfully"}), 200
+
+
+
+# Reserve one copy of a book for purchase
+@app.route("/reserve/<int:item_number>", methods=["POST"])
+def reserve(item_number):
+    success = reserve_book(item_number)
+
+    if not success:
+        return jsonify({
+            "error": "Book not found or out of stock"
+        }), 409
+
+    return jsonify({
+        "message": "Book reserved successfully"
+    }), 200
+
 
 
 

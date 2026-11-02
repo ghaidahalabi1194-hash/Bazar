@@ -69,3 +69,29 @@ def update_book(item_number, price=None, quantity=None):
     conn.commit()
     conn.close()
     return True
+
+
+
+def reserve_book(item_number):
+    conn = sqlite3.connect(DB_PATH, timeout=10)
+
+    # Decrease stock only if at least one copy is available
+    cursor = conn.execute(
+        """
+        UPDATE books
+        SET quantity = quantity - 1
+        WHERE id = ? AND quantity > 0
+        """,
+        (item_number,)
+    )
+
+    # Check whether one book was successfully reserved
+    success = cursor.rowcount == 1
+
+    if success:
+        conn.commit()
+    else:
+        conn.rollback()
+
+    conn.close()
+    return success
