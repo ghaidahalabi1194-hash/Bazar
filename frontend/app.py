@@ -31,5 +31,25 @@ def search(topic):
         }), 503
 
 
+
+    
+# Get information about a specific book from Catalog
+@app.route("/info/<int:item_number>", methods=["GET"])
+def info(item_number):
+    try:
+        response = requests.get(
+            f"{CATALOG_URL}/info/{item_number}",
+            timeout=5
+        )
+
+        return jsonify(response.json()), response.status_code
+
+    except requests.RequestException:
+        return jsonify({
+            "error": "Catalog Server is unavailable"
+        }), 503
+
+
+
 if __name__ == "__main__":
     app.run(host="127.0.0.1", port=5000, debug=True)
