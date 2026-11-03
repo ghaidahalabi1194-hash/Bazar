@@ -1,0 +1,40 @@
+
+services:
+  catalog:
+    build: ./catalog
+    container_name: bazar-catalog
+    ports:
+      - "5001:5001"
+    volumes:
+      - catalog_data:/app/data
+    environment:
+      - CATALOG_DB_PATH=/app/data/catalog.db
+
+  order:
+    build: ./order
+    container_name: bazar-order
+    ports:
+      - "5002:5002"
+    volumes:
+      - order_data:/app/data
+    environment:
+      - ORDER_DB_PATH=/app/data/orders.db
+      - CATALOG_URL=http://catalog:5001
+    depends_on:
+      - catalog
+
+  frontend:
+    build: ./frontend
+    container_name: bazar-frontend
+    ports:
+      - "5000:5000"
+    environment:
+      - CATALOG_URL=http://catalog:5001
+      - ORDER_URL=http://order:5002
+    depends_on:
+      - catalog
+      - order
+
+volumes:
+  catalog_data:
+  order_data:
